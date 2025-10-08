@@ -2,8 +2,6 @@ package com.syntech.sustentabilidadesocial.sustentabilidade_social.models;
 
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
-
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.RoleEnum;
 
 import jakarta.persistence.Column;
@@ -12,6 +10,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +27,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
     
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_slug", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String slug;
 
     @Column(nullable = true)
