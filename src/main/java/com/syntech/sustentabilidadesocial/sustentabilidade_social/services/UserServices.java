@@ -1,8 +1,8 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.services;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,7 @@ import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.helper.DT
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.models.User;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.repository.UserRepository;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.CreateUserRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateNameRequest;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.UserUtils;
 
 @Service
@@ -56,6 +57,31 @@ public class UserServices {
         UserDTO userDTO = UserDTO.builder()
         .profilePictureUrl(newUser.getProfilePictureUrl())
         .name(newUser.getName())
+        .build();
+
+        Map<String, Object> cleanDTO = DTOUtils.cleanDTO(userDTO);
+
+        return cleanDTO;
+    }
+
+    public Map<String, Object> updateName(String userId, UpdateNameRequest updateNameData) throws Exception{
+        
+        UUID userUUID = UUID.fromString(userId);
+
+        Optional<User> findUser = userRepository.findById(userUUID);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não existe");
+        }
+
+        User user = findUser.get();
+
+        user.setName(updateNameData.name());
+
+        User updatedUser = userRepository.save(user);
+
+        UserDTO userDTO = UserDTO.builder()
+        .name(updatedUser.getName())
         .build();
 
         Map<String, Object> cleanDTO = DTOUtils.cleanDTO(userDTO);
