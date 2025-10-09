@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateEmailRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdatePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,9 +42,7 @@ public class UserServices {
         do {
             slug = UserUtils.generateSlug(newUserData.name());
             findUser = userRepository.findBySlug(slug);
-
-            if (findUser.isEmpty()) break;
-        } while (true);
+        } while (findUser.isPresent());
 
         User user = User.builder().
         profilePictureUrl(!newUserData.pictureProfile().isEmpty() ? newUserData.pictureProfile() : null)
@@ -59,12 +59,10 @@ public class UserServices {
         .name(newUser.getName())
         .build();
 
-        Map<String, Object> cleanDTO = DTOUtils.cleanDTO(userDTO);
-
-        return cleanDTO;
+        return DTOUtils.cleanDTO(userDTO);
     }
 
-    public Map<String, Object> updateName(String userId, UpdateNameRequest updateNameData) throws Exception{
+    public Map<String, Object> updateName(String userId, UpdateNameRequest updateNameData) throws Exception {
         
         UUID userUUID = UUID.fromString(userId);
 
@@ -84,9 +82,73 @@ public class UserServices {
         .name(updatedUser.getName())
         .build();
 
-        Map<String, Object> cleanDTO = DTOUtils.cleanDTO(userDTO);
-
-        return cleanDTO;
+        return DTOUtils.cleanDTO(userDTO);
     }
 
+    public Map<String, Object> updateEmail(String userId, UpdateEmailRequest updateEmailData) throws Exception {
+
+        UUID userUUID = UUID.fromString(userId);
+
+        Optional<User> findUser = userRepository.findById(userUUID);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não existe");
+        }
+
+        User user = findUser.get();
+
+        user.setEmail(updateEmailData.email());
+
+        User updatedUser = userRepository.save(user);
+
+        UserDTO userDTO = UserDTO.builder()
+        .email(updatedUser.getEmail())
+        .build();
+
+        return DTOUtils.cleanDTO(userDTO);
+    }
+
+    public Map<String, Object> updatePassword(String userId, UpdatePasswordRequest updatePasswordData) throws Exception {
+
+        UUID userUUID = UUID.fromString(userId);
+
+        Optional<User> findUser = userRepository.findById(userUUID);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não existe");
+        }
+
+        User user = findUser.get();
+
+        user.setPassword(updatePasswordData.password());
+
+        User updatedUser = userRepository.save(user);
+
+        UserDTO userDTO = UserDTO.builder()
+                .name(updatedUser.getName())
+                .build();
+
+        return DTOUtils.cleanDTO(userDTO);
+    }
+
+    public Map<String, Object> deleteUser(String userId) throws Exception {
+
+        UUID userUUID = UUID.randomUUID();
+
+        Optional<User> findUser = userRepository.findById(userUUID);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não existe");
+        }
+
+        User user = findUser.get();
+
+        userRepository.delete(user);
+
+        UserDTO userDTO = UserDTO.builder()
+                .name(user.getName())
+                .build();
+
+        return DTOUtils.cleanDTO(userDTO);
+    }
 }
