@@ -8,6 +8,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateEmailRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -58,7 +60,7 @@ public class UserServicesTest {
             userUtilsMock.when(() -> UserUtils.generateSlug(any())).thenReturn("joao-da-silva-abc123");
 
         } catch (Exception ex) {
-
+            throw new Exception("Não foi possível realizar as validações");
         }
 
         // Simula o save
@@ -121,6 +123,44 @@ public class UserServicesTest {
         // Assert
         assertNotNull(result);
         assertEquals(nameTest, result.get("name"));
-        // profilePictureUrl deve ser null ou não presente
+        // profilePictureUrl deve ser null ou não presente...
     }
+
+    @Test
+    void updateEmailTest() throws Exception {
+
+        String emailTest = "novoemail@gmail.com";
+
+        String userIdTest = UUID.randomUUID().toString();
+
+        UpdateEmailRequest req = Mockito.mock(UpdateEmailRequest.class);
+        when(req.email()).thenReturn(emailTest);
+
+        User userTest = User.builder()
+                .name("Leandro Souza")
+                .email("teste@email.com")
+                .slug("leandro-souza-abc123")
+                .build();
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(userTest));
+
+        when(userRepository.findByEmail(emailTest)).thenReturn(Optional.empty());
+
+        try (MockedStatic<UserUtils> userUtilsMock = Mockito.mockStatic(UserUtils.class)) {
+            userUtilsMock.when(() -> UserUtils.isDomainValid(any())).thenReturn(true);
+        } catch (Exception ex) {
+            throw new Exception("Não foi possível realizar a validação");
+        }
+
+        userTest.setEmail(emailTest);
+
+        when(userRepository.save(any(User.class))).thenReturn(userTest);
+
+        Map<String, Object> result = userServices.updateEmail(userIdTest, req);
+
+        assertNotNull(result);
+        assertEquals(emailTest, result.get("email"));
+    }
+
+
 }
