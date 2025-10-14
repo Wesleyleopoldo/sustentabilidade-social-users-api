@@ -1,5 +1,6 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.services;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -91,8 +92,18 @@ public class UserServices {
 
         Optional<User> findUser = userRepository.findById(userUUID);
 
+        Optional<User> findUserByEmail = userRepository.findByEmail(updateEmailData.email());
+
         if (findUser.isEmpty()) {
             throw new Exception("Usuário não existe");
+        }
+
+        if (!UserUtils.isDomainValid(updateEmailData.email())) {
+            throw new Exception("Esse email não é válido...");
+        }
+
+        if (findUserByEmail.isPresent()) {
+            throw new Exception("Esse email já está cadastrado...");
         }
 
         User user = findUser.get();
@@ -133,7 +144,7 @@ public class UserServices {
 
     public Map<String, Object> deleteUser(String userId) throws Exception {
 
-        UUID userUUID = UUID.randomUUID();
+        UUID userUUID = UUID.fromString(userId);
 
         Optional<User> findUser = userRepository.findById(userUUID);
 
@@ -151,4 +162,77 @@ public class UserServices {
 
         return DTOUtils.cleanDTO(userDTO);
     }
+
+    public Map<String, Object> getUserById(String userId) throws Exception {
+
+        UUID userUUID = UUID.fromString(userId);
+
+        Optional<User> findUser = userRepository.findById(userUUID);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não encontrado");
+        }
+
+        User user = findUser.get();
+
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .slug(user.getSlug())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+
+        return DTOUtils.cleanDTO(userDTO);
+    }
+
+    public Map<String, Object> getUserBySlug(String slug) throws Exception {
+
+        Optional<User> findUser = userRepository.findBySlug(slug);
+
+        if (findUser.isEmpty()) {
+            throw new Exception("Usuário não encontrado");
+        }
+
+        User user = findUser.get();
+
+        UserDTO userDTO = UserDTO.builder()
+                .slug(user.getSlug())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .name(user.getName())
+                .build();
+
+        return DTOUtils.cleanDTO(userDTO);
+    }
+
+    public List<Map<String, Object>> getAllUsers() throws Exception {
+
+        List<User> users = userRepository.findAll();
+
+        if (users.isEmpty()) {
+            throw new Exception("Não existe usuários cadastrados");
+        }
+
+        List<UserDTO> usersDTO = users.stream().map(user -> UserDTO.builder()
+                .slug(user.getSlug())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .name(user.getName())
+                .build()
+        ).toList();
+
+        List<Map<String, Object>> cleanDTOSList;
+
+        cleanDTOSList = usersDTO.stream().map(userDTO -> {
+            try {
+                return DTOUtils.cleanDTO(userDTO);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+
+        return cleanDTOSList;
+    }
+
+
 }
