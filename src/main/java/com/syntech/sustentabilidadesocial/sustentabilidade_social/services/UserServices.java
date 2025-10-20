@@ -10,12 +10,16 @@ import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.Updat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.AlreadyExistsException;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.EmailNotValidException;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.NotFoundException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.UserDTO;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.helper.DTOUtils;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.models.User;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.repository.UserRepository;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.CreateUserRequest;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateNameRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.RoleEnum;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.UserUtils;
 
 @Service
@@ -27,17 +31,19 @@ public class UserServices {
     public UserServices() {
     }
 
+
+    // Cria usuário...
     public Map<String, Object> createUser(CreateUserRequest newUserData) throws Exception {
         
         String slug;
         Optional<User> findUser = userRepository.findByEmail(newUserData.email());
 
         if (!UserUtils.isDomainValid(newUserData.email())) {
-            throw new Exception("Esse email não é válido...");
+            throw new EmailNotValidException("Esse email não é válido...");
         }
 
         if (findUser.isPresent()) {
-            throw new Exception("Esse email já está cadastrado...");
+            throw new AlreadyExistsException("Esse email já está cadastrado...");
         }
 
         do {
@@ -51,6 +57,7 @@ public class UserServices {
         .name(newUserData.name())
         .email(newUserData.email())
         .password(newUserData.password())
+        .role(RoleEnum.USER)
         .build();
 
         User newUser = userRepository.save(user);
@@ -63,6 +70,7 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+    // Atualiza nome do usuário pelo id...
     public Map<String, Object> updateName(String userId, UpdateNameRequest updateNameData) throws Exception {
         
         UUID userUUID = UUID.fromString(userId);
@@ -70,7 +78,7 @@ public class UserServices {
         Optional<User> findUser = userRepository.findById(userUUID);
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não existe");
+            throw new NotFoundException("Usuário não existe");
         }
 
         User user = findUser.get();
@@ -86,6 +94,8 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Atualiza email do usuário pelo id...
     public Map<String, Object> updateEmail(String userId, UpdateEmailRequest updateEmailData) throws Exception {
 
         UUID userUUID = UUID.fromString(userId);
@@ -95,15 +105,15 @@ public class UserServices {
         Optional<User> findUserByEmail = userRepository.findByEmail(updateEmailData.email());
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não existe");
+            throw new NotFoundException("Usuário não existe");
         }
 
         if (!UserUtils.isDomainValid(updateEmailData.email())) {
-            throw new Exception("Esse email não é válido...");
+            throw new EmailNotValidException("Esse email não é válido...");
         }
 
         if (findUserByEmail.isPresent()) {
-            throw new Exception("Esse email já está cadastrado...");
+            throw new AlreadyExistsException("Esse email já está cadastrado...");
         }
 
         User user = findUser.get();
@@ -119,6 +129,8 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Atualiza senha de usuário...
     public Map<String, Object> updatePassword(String userId, UpdatePasswordRequest updatePasswordData) throws Exception {
 
         UUID userUUID = UUID.fromString(userId);
@@ -126,7 +138,7 @@ public class UserServices {
         Optional<User> findUser = userRepository.findById(userUUID);
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não existe");
+            throw new NotFoundException("Usuário não existe");
         }
 
         User user = findUser.get();
@@ -142,6 +154,8 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Deleta usuário pelo id...
     public Map<String, Object> deleteUser(String userId) throws Exception {
 
         UUID userUUID = UUID.fromString(userId);
@@ -149,7 +163,7 @@ public class UserServices {
         Optional<User> findUser = userRepository.findById(userUUID);
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não existe");
+            throw new NotFoundException("Usuário não existe");
         }
 
         User user = findUser.get();
@@ -163,6 +177,8 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Buscar usuário pelo id...
     public Map<String, Object> getUserById(String userId) throws Exception {
 
         UUID userUUID = UUID.fromString(userId);
@@ -170,7 +186,7 @@ public class UserServices {
         Optional<User> findUser = userRepository.findById(userUUID);
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não encontrado");
+            throw new NotFoundException("Usuário não encontrado");
         }
 
         User user = findUser.get();
@@ -187,12 +203,14 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Buscar usuário pelo slug...
     public Map<String, Object> getUserBySlug(String slug) throws Exception {
 
         Optional<User> findUser = userRepository.findBySlug(slug);
 
         if (findUser.isEmpty()) {
-            throw new Exception("Usuário não encontrado");
+            throw new NotFoundException("Usuário não encontrado");
         }
 
         User user = findUser.get();
@@ -206,12 +224,14 @@ public class UserServices {
         return DTOUtils.cleanDTO(userDTO);
     }
 
+
+    // Listar usuários...
     public List<Map<String, Object>> getAllUsers() throws Exception {
 
         List<User> users = userRepository.findAll();
 
         if (users.isEmpty()) {
-            throw new Exception("Não existe usuários cadastrados");
+            throw new NotFoundException("Não existe usuários cadastrados");
         }
 
         List<UserDTO> usersDTO = users.stream().map(user -> UserDTO.builder()
@@ -233,6 +253,5 @@ public class UserServices {
 
         return cleanDTOSList;
     }
-
 
 }
