@@ -1,4 +1,4 @@
-package com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors;
+package com.syntech.sustentabilidadesocial.sustentabilidade_social.errors;
 
 public class InternalErrorException extends RuntimeException {
     

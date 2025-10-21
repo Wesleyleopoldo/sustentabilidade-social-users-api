@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateEmailRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,10 +19,11 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.CreateUserRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.UpdateEmailRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.UpdateNameRequest;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.models.User;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.repository.UserRepository;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.CreateUserRequest;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateNameRequest;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.services.UserServices;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.UserUtils;
 

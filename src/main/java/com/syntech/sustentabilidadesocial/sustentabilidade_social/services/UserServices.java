@@ -5,20 +5,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateEmailRequest;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdatePasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.AlreadyExistsException;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.EmailNotValidException;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.NotFoundException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.UserDTO;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.helper.DTOUtils;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.CreateUserRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.UpdateEmailRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.UpdateNameRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests.UpdatePasswordRequest;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.AlreadyExistsException;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.EmailNotValidException;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.NotFoundException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.models.User;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.repository.UserRepository;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.CreateUserRequest;
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.requests.UpdateNameRequest;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.RoleEnum;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.UserUtils;
 
@@ -63,6 +63,7 @@ public class UserServices {
         User newUser = userRepository.save(user);
 
         UserDTO userDTO = UserDTO.builder()
+        .id(newUser.getId())
         .profilePictureUrl(newUser.getProfilePictureUrl())
         .name(newUser.getName())
         .build();

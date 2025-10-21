@@ -1,4 +1,4 @@
-package com.syntech.sustentabilidadesocial.sustentabilidade_social.Configs;
+package com.syntech.sustentabilidadesocial.sustentabilidade_social.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

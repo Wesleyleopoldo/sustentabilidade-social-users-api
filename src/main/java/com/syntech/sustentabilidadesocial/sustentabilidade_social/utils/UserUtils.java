@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.UUID;
 
-import javax.naming.*;
 import javax.naming.directory.*;
 
 public class UserUtils {
