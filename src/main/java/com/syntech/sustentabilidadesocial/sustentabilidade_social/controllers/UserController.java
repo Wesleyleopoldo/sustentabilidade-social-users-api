@@ -28,7 +28,7 @@ public class UserController {
     private UserServices userServices;
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createUser(@RequestBody CreateUserRequest newUserData) throws Exception{
+    public ResponseEntity<Map<String, Object>> createUser(@RequestBody CreateUserRequest newUserData) throws Exception {
         Map<String, Object> newUser = userServices.createUser(newUserData);
         return ResponseEntity.status(201).body(newUser);
     }
@@ -42,7 +42,6 @@ public class UserController {
     @PutMapping("/email/{id}")
     public ResponseEntity<Map<String, Object>> updateEmail(@PathVariable String id, @RequestBody UpdateEmailRequest newEmailData) throws Exception {
         Map<String, Object> newEmail = userServices.updateEmail(id, newEmailData);
-
         return ResponseEntity.status(200).body(newEmail);
     }
 

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.UserDTO;
@@ -27,6 +28,9 @@ public class UserServices {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServices() {
     }
@@ -56,7 +60,7 @@ public class UserServices {
         .slug(slug)
         .name(newUserData.name())
         .email(newUserData.email())
-        .password(newUserData.password())
+        .password(passwordEncoder.encode(newUserData.password()))
         .role(RoleEnum.USER)
         .build();
 
@@ -144,7 +148,7 @@ public class UserServices {
 
         User user = findUser.get();
 
-        user.setPassword(updatePasswordData.password());
+        user.setPassword(passwordEncoder.encode(updatePasswordData.password()));
 
         User updatedUser = userRepository.save(user);
 
