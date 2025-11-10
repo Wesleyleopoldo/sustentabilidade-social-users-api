@@ -1,5 +1,6 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.global;
 
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.BadCredentialsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,6 +31,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailNotValidException.class)
     public ResponseEntity<ErrorResponse> handleEmailNotValidException(Exception ex) {
+        return ResponseEntity.status(400).body(new ErrorResponse(ex.getMessage(), 400));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(Exception ex) {
         return ResponseEntity.status(400).body(new ErrorResponse(ex.getMessage(), 400));
     }
 }
