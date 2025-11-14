@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.BadCredentialsException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.NotFoundException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.models.User;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +26,6 @@ public class LoginServices {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${jwt.secret}")
-    private String secret;
-
     public String createJWT(String email, String password) throws Exception {
         Optional<User> findUser = userRepository.findByEmail(email);
 
@@ -42,15 +40,10 @@ public class LoginServices {
         }
 
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+
 
             // Gera o token
-            return JWT.create()
-                    .withIssuer("sustentabilidade-social") // quem gerou o token
-                    .withSubject(user.getId().toString()) // identificação principal do usuário
-                    .withIssuedAt(new Date()) // data de criação
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 3600000)) // expira em 1 hora
-                    .sign(algorithm); // assinatura
+            return JWTUtils.generateToken(user);
 
         } catch(InternalErrorException exception) {
             throw new InternalErrorException("Erro ao criar token jwt");
