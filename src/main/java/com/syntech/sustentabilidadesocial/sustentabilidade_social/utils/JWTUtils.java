@@ -24,7 +24,7 @@ public class JWTUtils {
                 .sign(algorithm); // assinatura
     }
 
-    public static String validateToken(String token) {
+    // public static String validateToken(String token) {
 
-    }
+    // }
 }

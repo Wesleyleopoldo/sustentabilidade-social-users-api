@@ -21,9 +21,9 @@ public class JwtMiddleware extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            try {
-                String userId = 
-            }
+            // try {
+            //    String userId = 
+            // }
         }
     }
 }

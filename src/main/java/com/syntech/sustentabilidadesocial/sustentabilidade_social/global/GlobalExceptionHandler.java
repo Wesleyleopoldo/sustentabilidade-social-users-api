@@ -1,12 +1,12 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.global;
 
-import com.syntech.sustentabilidadesocial.sustentabilidade_social.Errors.BadCredentialsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.responses.ErrorResponse;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.AlreadyExistsException;
+import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.BadCredentialsException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.EmailNotValidException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.InternalErrorException;
 import com.syntech.sustentabilidadesocial.sustentabilidade_social.errors.NotFoundException;
