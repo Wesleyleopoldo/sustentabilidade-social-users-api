@@ -1,4 +1,6 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests;
 
-public record UpdateNameRequest(String name) {
+import jakarta.validation.constraints.NotNull;
+
+public record UpdateNameRequest(@NotNull(message = "O novo nome não pode ser nulo!") String name) {
 }

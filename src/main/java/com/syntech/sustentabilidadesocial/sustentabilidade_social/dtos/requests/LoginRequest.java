@@ -1,4 +1,6 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests;
 
-public record LoginRequest(String email, String password) {
+import jakarta.validation.constraints.NotNull;
+
+public record LoginRequest(@NotNull(message = "O email não pode ser nulo!") String email, @NotNull(message = "A senha não pode ser nulo!") String password) {
 }

@@ -1,4 +1,6 @@
 package com.syntech.sustentabilidadesocial.sustentabilidade_social.dtos.requests;
 
-public record UpdateEmailRequest(String email) {
+import jakarta.validation.constraints.NotNull;
+
+public record UpdateEmailRequest(@NotNull(message = "O novo email não pode ser nulo!") String email) {
 }
