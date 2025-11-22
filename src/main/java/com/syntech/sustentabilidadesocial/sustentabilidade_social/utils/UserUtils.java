@@ -8,7 +8,8 @@ import java.util.UUID;
 import javax.naming.directory.*;
 
 public class UserUtils {
-    public static boolean isDomainValid(String email) {
+    public static boolean isDomainValid(String email) throws Exception {
+
         String domain = email.substring(email.indexOf("@") + 1);
 
         try {
